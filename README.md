@@ -74,6 +74,29 @@ http://localhost:3000/api
 
 ## 5. Regras de negócios
 
+
+### 📌 Entidades principais
+- **Usuários**: possuem papéis (`ADMIN`, `LIDER`, `ANALISTA`, `TESTADOR`) que definem permissões.  
+- **Planos de Teste**: agrupam suites e casos de teste.  
+- **Suites de Teste**: agrupam casos relacionados.  
+- **Casos de Teste**: possuem título, descrição, prioridade (`BAIXA`, `MEDIA`, `ALTA`) e criticidade (`BAIXA`, `MEDIA`, `ALTA`).  
+- **Registros de Execução**: armazenam resultados (`NAO_EXECUTADO`, `SUCESSO`, `FALHA`, `BLOQUEADO`, `CANCELADO`).  
+- **Defeitos**: possuem situação (`ABERTO`, `EM_CORRECAO`, `CORRIGIDO`, `EM_TESTES`, `CONCLUIDO`, `CANCELADO`) e criticidade.  
+- **Scripts e Procedimentos**: detalham passos de execução.
+
+### 📌 Regras de negócio
+- Autenticação via **JWT**.  
+- Apenas **ADMIN** e **LIDER** podem criar/editar/deletar planos de teste.  
+- **ANALISTA** e **TESTADOR** podem consultar planos e executar casos.  
+- Cada entidade valida os campos contra os **enums** definidos (`Role`, `Prioridade`, `Resultado`, `Criticidade`, `Situacao`).  
+- O middleware de permissões garante que apenas usuários com papéis adequados executem determinadas ações.  
+- O middleware de erros padroniza respostas de falha:  
+  - **400** → erros de validação  
+  - **401** → token inválido ou não fornecido  
+  - **403** → acesso negado  
+  - **404** → recurso não encontrado  
+
+
 ## 6. Collections:
 
 
