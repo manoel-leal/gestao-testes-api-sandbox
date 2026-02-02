@@ -42,17 +42,17 @@ docker-compose up -d
 
 ```
 
-# Após a execução, a API estará disponível em:
+- Após a execução, a API estará disponível em:
 http://localhost:3000/api
 
 ## 4. Comandos úteis do Docker
 
-. Ver containers em execução
+- Ver containers em execução
 ```bash
 docker ps
 ```
 
-. Ver logs da aplicação
+- Ver logs da aplicação
 ```bash
 docker-compose logs -f
 ```
