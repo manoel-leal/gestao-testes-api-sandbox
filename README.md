@@ -55,6 +55,7 @@ http://localhost:3000/api
 - Ver logs da aplicação
 ```bash
     docker-compose logs -f
+    docker logs node_app
 ```
 
 - Recriar containers após alterações
