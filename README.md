@@ -57,11 +57,6 @@ http://localhost:3000/api
     docker-compose logs -f
 ```
 
-- Parar os containers
-  ```bash
-  docker-compose down
-  ```
-
 - Recriar containers após alterações
 ```bash
     docker-compose up -d --build
