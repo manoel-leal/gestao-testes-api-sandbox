@@ -100,9 +100,8 @@ http://localhost:3000/api
 
 ## 6. Collections:
 
-
-[Gestão de Testes - API.postman_collection.json](https://github.com/user-attachments/files/25016213/Gestao.de.Testes.-.API.postman_collection.json)
-{
+```bash
+    {
   "info": {
     "_postman_id": "30d0bfbc-43a7-49a8-bf07-788339f4af27",
     "name": "Gestão de Testes - API",
@@ -1138,5 +1137,7 @@ http://localhost:3000/api
     }
   ]
 }
+  ```
+
 
 
