@@ -49,13 +49,28 @@ http://localhost:3000/api
 
 - Ver containers em execução
 ```bash
-docker ps
+    docker ps
 ```
 
 - Ver logs da aplicação
 ```bash
-docker-compose logs -f
+    docker-compose logs -f
 ```
+
+- Parar os containers
+  ```bash
+    docker-compose down
+  ```
+
+- Recriar containers após alterações
+  ```bash
+    docker-compose up -d --build
+  ```
+- Acessar o container da API
+ ```bash
+    docker exec -it <nome_do_container_api> /bin/sh
+  ```
+
 
 
 
