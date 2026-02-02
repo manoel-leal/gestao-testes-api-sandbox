@@ -72,6 +72,11 @@ http://localhost:3000/api
     docker-compose down
   ```
 
+## 5. Regras de negócios
+
+## 6. Collections:
+
+
 
 
 
