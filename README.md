@@ -59,15 +59,16 @@ http://localhost:3000/api
 
 - Parar os containers
   ```bash
-    docker-compose down
+      docker-compose down
   ```
 
 - Recriar containers após alterações
-  ```bash
+```bash
     docker-compose up -d --build
   ```
+
 - Acessar o container da API
- ```bash
+```bash
     docker exec -it <nome_do_container_api> /bin/sh
   ```
 
