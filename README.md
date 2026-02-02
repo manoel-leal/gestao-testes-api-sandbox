@@ -40,6 +40,8 @@ docker-compose build
 # Subir os containers (API + banco de dados)
 docker-compose up -d
 
+```
+
 # Após a execução, a API estará disponível em:
 http://localhost:3000/api
 
@@ -48,10 +50,12 @@ http://localhost:3000/api
 . Ver containers em execução
 ```bash
 docker ps
+```
 
 . Ver logs da aplicação
 ```bash
 docker-compose logs -f
+```
 
 
 
