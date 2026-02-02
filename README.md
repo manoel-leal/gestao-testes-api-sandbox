@@ -1133,7 +1133,7 @@ http://localhost:3000/api
     },
     {
       "key": "base_url",
-      "value": ""
+      "value": "http://localhost:3000"
     }
   ]
 }
