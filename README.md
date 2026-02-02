@@ -67,6 +67,11 @@ http://localhost:3000/api
     docker exec -it <nome_do_container_api> /bin/sh
   ```
 
+- Parar os containers
+```bash
+    docker-compose down
+  ```
+
 
 
 
