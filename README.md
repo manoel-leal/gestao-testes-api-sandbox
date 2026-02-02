@@ -59,7 +59,7 @@ http://localhost:3000/api
 
 - Parar os containers
   ```bash
-    docker-compose down
+  docker-compose down
   ```
 
 - Recriar containers após alterações
