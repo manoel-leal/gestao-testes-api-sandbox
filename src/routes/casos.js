@@ -39,7 +39,7 @@ router.get("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANA
 
 router.get("/:id", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA, Role.TESTADOR]), async (req, res, next) => {
   try {
-    const caso = await Caso.findByPk(req.params.id, { include: [Defeito, Registro] });
+    const caso = await Caso.findByPk(req.params.id, { include: [{ model: Defeito, as: 'defeitos' }, { model: Registro, as: 'registros' }] });
     if (!caso) return res.status(404).json({ message: "Caso não encontrado." });
     res.json(caso);
   } catch (err) {

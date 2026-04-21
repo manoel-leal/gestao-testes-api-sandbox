@@ -17,7 +17,7 @@ router.get("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANA
 
 router.get("/:id", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA, Role.TESTADOR]), async (req, res, next) => {
   try {
-    const suite = await Suite.findByPk(req.params.id, { include: [Caso] });
+    const suite = await Suite.findByPk(req.params.id, { include: [{ model: Caso, as: 'casos' }] });
     if (!suite) return res.status(404).json({ message: "Suite não encontrada." });
     res.json(suite);
   } catch (err) {

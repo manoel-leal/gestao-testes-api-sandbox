@@ -6,6 +6,7 @@ const { Usuario } = require("../../models");
 
 // Usuário admin fixo
 const adminUser = {
+  id: "00000000-0000-0000-0000-000000000001",
   username: "admin",
   senha: "admin",
   nome: "admin",
@@ -22,7 +23,7 @@ router.post("/login", async (req, res, next) => {
     if (username === adminUser.username && senha === adminUser.senha) {
       const token = jwt.sign(
         {
-          id: "admin",
+          id: adminUser.id,
           username: adminUser.username,
           role: adminUser.role,
           nome: adminUser.nome,

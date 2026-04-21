@@ -13,6 +13,18 @@ router.get("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANA
   } catch (err) { next(err); }
 });
 
+// Buscar defeito por ID
+router.get("/:id", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA, Role.TESTADOR]), async (req, res, next) => {
+  try {
+    const { Caso } = require("../../models");
+    const defeito = await Defeito.findByPk(req.params.id, {
+      include: [{ model: Caso, as: 'caso' }]
+    });
+    if (!defeito) return res.status(404).json({ message: "Defeito não encontrado." });
+    res.json(defeito);
+  } catch (err) { next(err); }
+});
+
 // Criar defeito
 router.post("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA]), async (req, res, next) => {
   try {
@@ -31,6 +43,17 @@ router.post("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.AN
     });
 
     res.status(201).json(defeito);
+  } catch (err) { next(err); }
+});
+
+// Atualizar defeito
+router.put("/:id", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA]), async (req, res, next) => {
+  try {
+    const defeito = await Defeito.findByPk(req.params.id);
+    if (!defeito) return res.status(404).json({ message: "Defeito não encontrado." });
+
+    await defeito.update(req.body);
+    res.json(defeito);
   } catch (err) { next(err); }
 });
 

@@ -26,7 +26,7 @@ router.get("/", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANA
 // Consultar script por ID
 router.get("/:id", autenticar, verificarPermissao([Role.ADMIN, Role.LIDER, Role.ANALISTA, Role.TESTADOR]), async (req, res, next) => {
   try {
-    const script = await Script.findByPk(req.params.id, { include: [Procedimento] });
+    const script = await Script.findByPk(req.params.id, { include: [{ model: Procedimento, as: 'procedimentos' }] });
     if (!script) return res.status(404).json({ message: "Script não encontrado." });
     res.json(script);
   } catch (err) {
