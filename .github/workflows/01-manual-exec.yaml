@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   #nome do job
-  build:
+  api-test:
     # maquina onde o job vai rodar
     runs-on: ubuntu-latest
 
@@ -34,4 +34,15 @@ jobs:
 
       - name: Verificar containers
         run: docker ps
+
+      - name: Instalar dependencias
+        working-directory: test
+        run: npm install
+
+      - name: Executar testes de api
+        run: npm test
+
+  
+
+
 
