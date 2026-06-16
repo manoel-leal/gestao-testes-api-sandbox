@@ -1,0 +1,37 @@
+# CI de Nível 01 - Disparo Manual através de clique
+
+# nome da pipeline
+name: 'Execução Manual'
+
+# gatilhos / triggers - regras de disparo
+# gatilho manual = workflow_dispatch
+
+on:
+  workflow_dispatch:
+
+# permissões necessarias para o job deploy-report
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+#tarefas dentro da pipeline = jobs
+
+jobs:
+  #nome do job
+  build:
+    # maquina onde o job vai rodar
+    runs-on: ubuntu-latest
+
+    # passos do job
+    steps:
+      # clone do projeto
+      - uses: actions/checkout@v4
+
+      # Executando comando 
+      - name: Subir containers
+        run: docker compose up -d
+
+      - name: Verificar containers
+        run: docker ps
+
