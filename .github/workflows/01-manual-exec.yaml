@@ -42,6 +42,8 @@ jobs:
       - name: Executar testes de api
         working-directory: test
         run: npm test
+        env:
+          BASE_URL: http://localhost:3000
 
   
 
