@@ -1,36 +1,35 @@
-# CI de Nível 01 - Disparo Manual através de clique
-
-# nome da pipeline
 name: 'Execução Manual'
-
-# gatilhos / triggers - regras de disparo
-# gatilho manual = workflow_dispatch
 
 on:
   workflow_dispatch:
 
-# permissões necessarias para o job deploy-report
 permissions:
   contents: read
   pages: write
   id-token: write
 
-#tarefas dentro da pipeline = jobs
-
 jobs:
-  #nome do job
   api-test:
-    # maquina onde o job vai rodar
     runs-on: ubuntu-latest
 
-    # passos do job
     steps:
-      # clone do projeto
       - uses: actions/checkout@v4
 
-      # Executando comando 
       - name: Subir containers
         run: docker compose up -d
+
+      - name: Aguardar banco de dados ficar pronto
+        run: |
+          until docker compose exec -T db pg_isready -U postgres; do
+            echo "Aguardando Postgres..."
+            sleep 2
+          done
+
+      - name: Rodar migrations
+        run: docker compose exec -T app npx sequelize-cli db:migrate
+
+      - name: Rodar seeds
+        run: docker compose exec -T app npx sequelize-cli db:seed:all
 
       - name: Verificar containers
         run: docker ps
@@ -44,8 +43,3 @@ jobs:
         run: npm test
         env:
           BASE_URL: http://localhost:3000
-
-  
-
-
-

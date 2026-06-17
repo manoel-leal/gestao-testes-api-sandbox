@@ -147,6 +147,9 @@ docker-compose.override.yml
 logs/
 *.log
 
+# Dados do banco (gerado localmente pelo PostgreSQL)
+data/
+
 # Ambiente
 .env
 .env.local
