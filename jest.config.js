@@ -6,7 +6,7 @@ module.exports = {
       filename: "report.html",
       expand: true
     }],
-    ["jest-ctrf-json-reporter", {
+    ["./test/utils/ctrf-reporter.js", {
       outputDir: "./ctrf-report",
       outputFile: "ctrf-report.json"
     }]
