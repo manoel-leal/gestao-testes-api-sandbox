@@ -49,9 +49,17 @@ jobs:
         run: |
           mkdir -p pages-deploy
           cp test/report-site/index.html pages-deploy/
-          if [ -f test/ctrf-report/ctrf-report.json ]; then
-            cp test/ctrf-report/ctrf-report.json pages-deploy/
+
+          CTRF_FILE=$(find test -name "ctrf-report.json" -type f 2>/dev/null | head -1)
+          if [ -n "$CTRF_FILE" ]; then
+            cp "$CTRF_FILE" pages-deploy/ctrf-report.json
+            echo "CTRF report copiado de $CTRF_FILE"
+          else
+            echo "AVISO: ctrf-report.json nao encontrado em test/"
+            find test -name "*.json" -type f 2>/dev/null | head -10 || true
           fi
+
+          ls -la pages-deploy/
 
       - name: Upload relatorio para Pages
         if: always()
