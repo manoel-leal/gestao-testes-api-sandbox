@@ -36,14 +36,10 @@ jobs:
         run: docker ps
 
       - name: Instalar dependencias
-        run: |
-          cd test
-          npm install
+        run: npm install ./test
 
       - name: Executar testes de api
-        run: |
-          cd test
-          npx jest
+        run: npm jest ./test
 
   
 
