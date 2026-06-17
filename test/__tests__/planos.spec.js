@@ -20,6 +20,11 @@ describe("Suite - Manter Plano de Testes", () => {
   });
 
   it("Deve listar planos de teste com sucesso", async () => {
+    const planoDeTeste = planoBuilder();
+
+    const planoCriado = await post(BASE_URL, PATHS.PLANOS, planoDeTeste, token);
+
+    expect(planoCriado.statusCode).toBe(201);
     const resposta = await get(BASE_URL, PATHS.PLANOS, token);
 
     expect(resposta.statusCode).toBe(200);
