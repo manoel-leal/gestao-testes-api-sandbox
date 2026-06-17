@@ -43,7 +43,7 @@ jobs:
       - name: Executar testes de api
         run: |
           cd test
-          npm test
+          npx test
 
   
 
