@@ -36,12 +36,14 @@ jobs:
         run: docker ps
 
       - name: Instalar dependencias
-        working-directory: test
-        run: npm install
+        run: |
+          cd test
+          npm install
 
       - name: Executar testes de api
-        working-directory: test
-        run: npm test
+        run: |
+          cd test
+          npm test
 
   
 
