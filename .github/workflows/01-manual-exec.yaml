@@ -43,3 +43,33 @@ jobs:
         run: npm test
         env:
           BASE_URL: http://localhost:3000
+
+      - name: Preparar relatorio para Pages
+        if: always()
+        run: |
+          mkdir -p pages-deploy
+          cp test/report-site/index.html pages-deploy/
+          if [ -f test/ctrf-report/ctrf-report.json ]; then
+            cp test/ctrf-report/ctrf-report.json pages-deploy/
+          fi
+
+      - name: Upload relatorio para Pages
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-deploy
+
+  deploy-report:
+    if: always()
+    needs: api-test
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy para GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

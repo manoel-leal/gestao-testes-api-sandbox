@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Testes - CTRF</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #333; padding: 40px 20px; }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { margin-bottom: 8px; color: #1a1a2e; }
+  .subtitle { color: #666; margin-bottom: 32px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card { background: #fff; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card .number { font-size: 32px; font-weight: 700; }
+  .card .label { font-size: 13px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .passed .number { color: #22c55e; }
+  .failed .number { color: #ef4444; }
+  .skipped .number { color: #f59e0b; }
+  .total .number { color: #3b82f6; }
+  .duration .number { color: #8b5cf6; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  th { background: #1a1a2e; color: #fff; padding: 14px 16px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+  tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-passed { background: #dcfce7; color: #166534; }
+  .badge-failed { background: #fce4ec; color: #c62828; }
+  .badge-skipped { background: #fef3c7; color: #92400e; }
+  .badge-pending { background: #e2e8f0; color: #475569; }
+  .badge-other { background: #e2e8f0; color: #475569; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-top: 16px; }
+  .error-box pre { white-space: pre-wrap; font-size: 13px; color: #991b1b; margin-top: 8px; }
+  .loading { text-align: center; padding: 60px 0; color: #666; }
+  .no-report { text-align: center; padding: 60px 0; color: #666; }
+  .no-report h2 { margin-bottom: 8px; color: #333; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Relatório de Testes</h1>
+  <p class="subtitle" id="reportMeta">Carregando...</p>
+
+  <div class="summary" id="summaryCards"></div>
+
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Suite</th>
+        <th>Nome</th>
+        <th>Status</th>
+        <th>Duração (ms)</th>
+        <th>Mensagem</th>
+      </tr>
+    </thead>
+    <tbody id="resultsBody"></tbody>
+  </table>
+</div>
+
+<script>
+async function carregarRelatorio() {
+  const container = document.getElementById('resultsBody');
+  const summary = document.getElementById('summaryCards');
+  const meta = document.getElementById('reportMeta');
+
+  try {
+    const resp = await fetch('./ctrf-report.json');
+    if (!resp.ok) throw new Error('Arquivo não encontrado');
+    const data = await resp.json();
+    const results = data.results || data;
+    const tests = results.tests || [];
+    const summaryData = results.summary || {};
+
+    const total = summaryData.total || tests.length;
+    const passed = summaryData.passed || tests.filter(t => t.status === 'passed').length;
+    const failed = summaryData.failed || tests.filter(t => t.status === 'failed').length;
+    const skipped = summaryData.skipped || tests.filter(t => t.status === 'skipped' || t.status === 'pending').length;
+    const duration = summaryData.duration || tests.reduce((acc, t) => acc + (t.duration || 0), 0);
+
+    const date = results.startTime ? new Date(results.startTime).toLocaleString('pt-BR') : '—';
+    meta.textContent = `Executado em: ${date} | ${data.reportName || ''}`;
+
+    summary.innerHTML = `
+      <div class="card total"><div class="number">${total}</div><div class="label">Total</div></div>
+      <div class="card passed"><div class="number">${passed}</div><div class="label">Aprovados</div></div>
+      <div class="card failed"><div class="number">${failed}</div><div class="label">Falhas</div></div>
+      <div class="card skipped"><div class="number">${skipped}</div><div class="label">Pulados</div></div>
+      <div class="card duration"><div class="number">${duration}ms</div><div class="label">Duração</div></div>
+    `;
+
+    container.innerHTML = tests.map(t => {
+      const status = (t.status || 'unknown').toLowerCase();
+      const badge = `badge-${['passed','failed','skipped','pending'].includes(status) ? status : 'other'}`;
+      const suite = t.suite || t.fileName || '—';
+      const message = t.message || t.failureMessage || '';
+
+      return `<tr>
+        <td>${esc(suite)}</td>
+        <td>${esc(t.name || '—')}</td>
+        <td><span class="badge ${badge}">${status.toUpperCase()}</span></td>
+        <td>${t.duration ?? '—'}</td>
+        <td>${message ? `<div class="error-box"><pre>${esc(message)}</pre></div>` : '—'}</td>
+      </tr>`;
+    }).join('');
+
+  } catch (e) {
+    document.querySelector('table').style.display = 'none';
+    summary.innerHTML = '';
+    meta.textContent = '';
+    document.querySelector('.container').insertAdjacentHTML('beforeend', `
+      <div class="no-report">
+        <h2>Relatório não disponível</h2>
+        <p>Execute os testes primeiro para gerar o relatório CTRF.</p>
+        <p style="margin-top:12px;font-size:13px;color:#999;">${e.message}</p>
+      </div>
+    `);
+  }
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+carregarRelatorio();
+</script>
+</body>
+</html>

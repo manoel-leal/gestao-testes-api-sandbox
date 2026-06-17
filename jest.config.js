@@ -1,4 +1,3 @@
-// jest.config.js
 module.exports = {
   reporters: [
     "default",
@@ -6,6 +5,10 @@ module.exports = {
       publicPath: "./report",
       filename: "report.html",
       expand: true
+    }],
+    ["jest-ctrf-json-reporter", {
+      outputDir: "./ctrf-report",
+      outputFile: "ctrf-report.json"
     }]
   ]
 };
