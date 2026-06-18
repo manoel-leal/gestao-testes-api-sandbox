@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest --json --outputFile=ctrf-report/jest-output.json 2>/dev/null; rc=$?; node utils/convert-to-ctrf.js; exit $rc",
+    "test": "mkdir -p ctrf-report && npx jest --json --outputFile=ctrf-report/jest-output.json; rc=$?; node utils/convert-to-ctrf.js; exit $rc",
     "test:report": "jest --coverage && npx jest-stare"
   },
   "keywords": [],
