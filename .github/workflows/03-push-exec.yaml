@@ -1,4 +1,4 @@
-name: 'Execução Manual'
+name: 'Execução por push'
 
 on:
   push:
