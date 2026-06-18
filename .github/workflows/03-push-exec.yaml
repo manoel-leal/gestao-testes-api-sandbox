@@ -1,0 +1,85 @@
+name: 'Execução Manual'
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Subir containers
+        run: docker compose up -d
+
+      - name: Aguardar banco de dados ficar pronto
+        run: |
+          until docker compose exec -T db pg_isready -U postgres; do
+            echo "Aguardando Postgres..."
+            sleep 2
+          done
+
+      - name: Rodar migrations
+        run: docker compose exec -T app npx sequelize-cli db:migrate
+
+      - name: Rodar seeds
+        run: docker compose exec -T app npx sequelize-cli db:seed:all
+
+      - name: Verificar containers
+        run: docker ps
+
+      - name: Instalar dependencias
+        working-directory: test
+        run: npm install
+
+      - name: Executar testes de api
+        working-directory: test
+        run: npm test
+        env:
+          BASE_URL: http://localhost:3000
+
+      - name: Preparar relatorio para Pages
+        if: always()
+        run: |
+          mkdir -p pages-deploy
+          cp test/report-site/index.html pages-deploy/
+
+          CTRF_FILE=$(find test -name "ctrf-report.json" -type f 2>/dev/null | head -1)
+          if [ -n "$CTRF_FILE" ]; then
+            cp "$CTRF_FILE" pages-deploy/ctrf-report.json
+            echo "CTRF report copiado de $CTRF_FILE"
+          else
+            echo "AVISO: ctrf-report.json nao encontrado em test/"
+            find test -name "*.json" -type f 2>/dev/null | head -10 || true
+          fi
+
+          ls -la pages-deploy/
+
+      - name: Upload relatorio para Pages
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-deploy
+
+  deploy-report:
+    if: always()
+    needs: api-test
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy para GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
