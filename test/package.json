@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "npx jest --json --outputFile=ctrf-report/jest-output.json 2>/dev/null; rc=$?; node utils/convert-to-ctrf.js; exit $rc",
     "test:report": "jest --coverage && npx jest-stare"
   },
   "keywords": [],
@@ -13,7 +13,6 @@
   "devDependencies": {
     "ajv": "^8.17.1",
     "jest": "^30.2.0",
-    "jest-ctrf-json-reporter": "^0.0.11",
     "jest-html-reporters": "^3.1.7",
     "jest-stare": "^2.5.3",
     "supertest": "^7.2.2"
